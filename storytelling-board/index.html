@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elowen · Privacy-First Retail Assistant Storytelling Board</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fafafa;
+      color: #111827;
+      overflow-x: hidden;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Smooth transitions for dimming & spotlighting */
+    .zone-transition {
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                  filter 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .zone-dimmed {
+      opacity: 0.24 !important;
+      filter: grayscale(100%);
+    }
+    .zone-soft-dimmed {
+      opacity: 0.72 !important;
+      filter: grayscale(20%);
+    }
+    .zone-spotlight {
+      opacity: 1 !important;
+      filter: none;
+    }
+
+    /* Phone subtle elevation on focus */
+    .phone-chassis {
+      box-shadow: 0 22px 48px -12px rgba(0, 0, 0, 0.14), 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .phone-spotlight {
+      box-shadow: 0 28px 60px -10px rgba(17, 24, 39, 0.22), 0 0 0 2px rgba(17, 24, 39, 0.85);
+      transform: translateY(-2px);
+    }
+
+    /* Siri waveform animation */
+    @keyframes wavePulse {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
+    .siri-bar {
+      animation: wavePulse 0.9s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .siri-bar:nth-child(2) { animation-delay: 0.12s; }
+    .siri-bar:nth-child(3) { animation-delay: 0.24s; }
+    .siri-bar:nth-child(4) { animation-delay: 0.36s; }
+    .siri-bar:nth-child(5) { animation-delay: 0.18s; }
+    .siri-bar:nth-child(6) { animation-delay: 0.08s; }
+
+    /* Radar sweep rotation */
+    @keyframes radarSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-sweep {
+      transform-origin: 60px 60px;
+      animation: radarSpin 3.2s linear infinite;
+    }
+
+    /* Wi-Fi Aware dashed link flow */
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -24; }
+    }
+    .wifi-link-active {
+      stroke-dasharray: 5 5;
+      animation: dashFlow 0.8s linear infinite;
+    }
+
+    /* Privacy line pulse */
+    @keyframes privacyPulse {
+      0%, 100% { opacity: 0.45; box-shadow: 0 0 0 0 rgba(17, 24, 39, 0); }
+      50% { opacity: 1; box-shadow: 0 0 18px 2px rgba(17, 24, 39, 0.28); }
+    }
+    .privacy-line-pulse {
+      animation: privacyPulse 1.2s ease-in-out 2;
+    }
+
+    /* Shelf sensor amber pulse */
+    @keyframes amberBeacon {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(1.22); }
+    }
+    .sensor-amber-active {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: amberBeacon 1.1s ease-in-out infinite;
+    }
+
+    /* Smooth SVG actor movement */
+    #actor-alex, #actor-staff {
+      transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+    }
+
+    /* Agent chip glow */
+    .agent-chip {
+      transition: all 0.32s ease;
+    }
+    .agent-chip-active {
+      background-color: #111827 !important;
+      color: #ffffff !important;
+      border-color: #111827 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px -3px rgba(17, 24, 39, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gray-900 selection:text-white">
+
+  <!-- Top Header Bar -->
+  <header class="w-full max-w-[1440px] mx-auto px-4 sm:px-8 pt-4 pb-2 flex flex-wrap items-center justify-between gap-3 z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl bg-gray-900 text-white flex items-center justify-center font-semibold text-sm shadow-sm">
+        E
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-sm sm:text-base font-semibold tracking-tight text-gray-900">Elowen · In-Store Private Assistant</h1>
+          <span id="header-time-badge" class="font-mono-code text-[11px] px-2 py-0.5 rounded-full bg-gray-200/80 text-gray-700 font-medium">
+            0:00–0:12
+          </span>
+        </div>
+        <p class="text-xs text-gray-500 hidden sm:block">Zero-identity retail architecture · Local phone intelligence + anonymous store nodes</p>
+      </div>
+    </div>
+
+    <!-- Legend & Quick Controls -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div class="hidden md:flex items-center gap-3 text-[11px] text-gray-500 bg-white border border-gray-200 rounded-full px-3.5 py-1.5 shadow-2xs">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gray-900"></span> On-Device Private</span>
+        <span class="text-gray-300">|</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full border border-gray-500 bg-white"></span> Anonymous Store</span>
+        <span class="text-gray-300">|</span>
+        <span class="font-mono-code text-gray-700" id="header-session-pill">No active session</span>
+      </div>
+
+      <button id="btn-replay" type="button" title="Replay current sub-step animation"
+        class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition shadow-2xs cursor-pointer">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        <span>Replay Step</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Stage Container -->
+  <main class="relative flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 py-2 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4">
+
+    <!-- LEFT ZONE: Shopper Phone (On-Device Boundary) -->
+    <section id="zone-phone" class="zone-transition relative z-20 flex flex-col items-center w-full max-w-[295px] shrink-0">
+      <div class="mb-2 flex items-center gap-1.5 text-[11px] font-medium text-gray-500 uppercase tracking-wider">
+        <svg class="w-3.5 h-3.5 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="3" />
+          <path d="M12 18h.01" />
+        </svg>
+        <span>Alex’s Phone · Local Vault</span>
+      </div>
+
+      <!-- iPhone Frame -->
+      <div id="phone-chassis" class="phone-chassis relative w-[272px] h-[548px] bg-white rounded-[42px] border-[3px] border-gray-900 p-3 flex flex-col justify-between overflow-hidden">
+        <!-- Dynamic Island & Status Bar -->
+        <div>
+          <div class="flex items-center justify-between px-3 pt-0.5 pb-2 text-[10px] font-semibold text-gray-900">
+            <span>9:41</span>
+            <div class="w-20 h-5 bg-gray-900 rounded-full mx-auto"></div>
+            <div class="flex items-center gap-1">
+              <span class="inline-block w-3 h-2 border border-gray-900 rounded-[2px] p-[1px]">
+                <span class="block w-full h-full bg-gray-900"></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- App Header inside Phone -->
+          <div class="flex items-center justify-between px-2 py-2 border-b border-gray-100">
+            <div class="flex items-center gap-1.5">
+              <span id="phone-app-dot" class="w-2 h-2 rounded-full bg-gray-400"></span>
+              <span id="phone-app-title" class="text-xs font-bold text-gray-900 tracking-tight">Siri</span>
+            </div>
+            <span id="phone-session-status" class="font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+              No identity
+            </span>
+          </div>
+        </div>
+
+        <!-- Dynamic Phone Screen Content -->
+        <div id="phone-screen-body" class="flex-1 overflow-y-auto px-2 py-2.5 flex flex-col justify-between">
+          <!-- Populated dynamically per step -->
+        </div>
+
+        <!-- Bottom Input Bar inside Phone -->
+        <div class="pt-1.5 border-t border-gray-100">
+          <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5">
+            <span id="phone-input-placeholder" class="text-[11px] text-gray-400 truncate">Ask anything...</span>
+            <span class="w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center text-[10px] font-bold">↑</span>
+          </div>
+          <div class="w-24 h-1 bg-gray-900 rounded-full mx-auto mt-2 opacity-80"></div>
+        </div>
+      </div>
+
+      <!-- Optional Returning-Visit Flash Button (Shown in Step 1B) -->
+      <button id="btn-returning-flash" type="button"
+        class="hidden mt-3 items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition shadow-sm cursor-pointer">
+        <span>⚡ Preview Returning-Visit Flash</span>
+      </button>
+    </section>
+
+    <!-- CENTER PRIVACY BOUNDARY LINE -->
+    <div id="privacy-boundary-wrapper" class="relative hidden lg:flex flex-col items-center justify-center h-[560px] px-2 z-20 select-none">
+      <div class="text-[10px] font-mono-code uppercase tracking-widest text-gray-400 mb-2 bg-[#fafafa] px-1.5 py-0.5 rounded border border-gray-200">
+        Privacy Line
+      </div>
+      <div id="privacy-line" class="w-[2px] flex-1 border-l-2 border-dashed border-gray-400 relative">
+        <!-- Animated Crossing Packet Pill -->
+        <div id="crossing-packet"
+          class="opacity-0 pointer-events-none transition-all duration-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-gray-900 text-white text-[11px] font-medium px-3 py-1.5 rounded-full shadow-lg border border-gray-700 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span id="crossing-packet-text">Left your phone: list + photo</span>
+        </div>
+      </div>
+      <div class="text-[10px] font-mono-code text-gray-400 mt-2 text-center leading-tight">
+        Zero PII<br/>Boundary
+      </div>
+    </div>
+
+    <!-- RIGHT ZONE: Cloud Agents + Isometric Retail Floor Plan -->
+    <section class="relative flex-1 w-full max-w-[960px] flex flex-col items-center">
+
+      <!-- TOP-LEFT CLOUD AGENTS CLUSTER -->
+      <div id="zone-cloud" class="zone-transition w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2 px-2 z-20">
+        <div id="cloud-container" class="bg-white border border-gray-200 rounded-2xl p-3 shadow-xs transition-all duration-300 w-full">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <!-- Cloud Lock Icon -->
+              <div class="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-800 shrink-0">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                  <rect x="10" y="13" width="4" height="3.5" rx="0.8" />
+                  <path d="M11 13v-1a1 1 0 0 1 2 0v1" />
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-gray-900">Store agents</span>
+                  <span id="cloud-session-tag" class="font-mono-code text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">
+                    idle · awaiting session
+                  </span>
+                </div>
+                <p class="text-[11px] text-gray-500">private, anonymous session · Orchestrator + specialized tools</p>
+              </div>
+            </div>
+
+            <!-- Ephemeral Session Memory Box (Highlighted in Step 5) -->
+            <div id="session-memory-box" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-gray-200 bg-gray-50 text-[11px] transition-all duration-500">
+              <span class="text-gray-500 font-medium">Session RAM:</span>
+              <span id="session-memory-content" class="font-mono-code text-[10px] text-gray-400">empty</span>
+            </div>
+          </div>
+
+          <!-- Expandable Orchestrator + 5 Agent Chips -->
+          <div id="cloud-agents-drawer" class="mt-2.5 pt-2.5 border-t border-gray-100 flex flex-wrap items-center gap-1.5">
+            <span class="text-[10px] font-mono-code uppercase tracking-wider text-gray-400 mr-1">Orchestrator →</span>
+            <span id="chip-diagnose" class="agent-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+              1. Diagnose
+            </span>
+            <span id="chip-product" class="agent-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+              2. Product search
+            </span>
+            <span id="chip-complementary" class="agent-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+              3. Complementary search
+            </span>
+            <span id="chip-guiding" class="agent-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+              4. Project guiding
+            </span>
+            <span id="chip-staff" class="agent-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+              5. Call staff
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISOMETRIC RETAIL STORE DIAGRAM (Refined layout with zero border overlaps) -->
+      <div id="zone-store" class="zone-transition relative w-full bg-white border border-gray-200/90 rounded-3xl p-2 sm:p-3 shadow-xs overflow-hidden">
+        <svg id="store-svg" viewBox="0 0 920 475" class="w-full h-auto select-none">
+          <defs>
+            <!-- Soft drop shadow for active nodes & callout pills -->
+            <filter id="nodeGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#111827" flood-opacity="0.22" />
+            </filter>
+            <filter id="pillShadow" x="-15%" y="-15%" width="130%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#111827" flood-opacity="0.08" />
+            </filter>
+          </defs>
+
+          <!-- Clean Outer Floor Boundary Polygon (More spacious margins around perimeter) -->
+          <polygon points="185,48 865,48 725,392 48,392" fill="#fcfcfc" stroke="#1f2937" stroke-width="1.6" />
+
+          <!-- Back Wall (Isometric 3D Block) -->
+          <g stroke="#374151" stroke-width="1.1" fill="#ffffff">
+            <polygon points="225,22 860,22 854,36 219,36" fill="#f3f4f6" />
+            <polygon points="219,36 854,36 854,52 219,52" fill="#ffffff" />
+            <polygon points="219,36 225,22 225,38 219,52" fill="#e5e7eb" />
+          </g>
+
+          <!-- Left Side Wall (Isometric 3D Block) -->
+          <g stroke="#374151" stroke-width="1.1" fill="#ffffff">
+            <polygon points="182,34 202,34 96,294 76,294" fill="#f3f4f6" />
+            <polygon points="76,294 96,294 96,312 76,312" fill="#e5e7eb" />
+            <polygon points="96,294 202,34 202,52 96,312" fill="#ffffff" />
+          </g>
+
+          <!-- 4 Isometric Retail Shelf Gondolas (Shifted slightly to leave clean aisle channels) -->
+          <!-- Shelf 1 (Far Left) -->
+          <g stroke="#374151" stroke-width="1.1">
+            <polygon points="232,115 268,115 190,308 154,308" fill="#f9fafb" />
+            <polygon points="154,308 190,308 190,326 154,326" fill="#e5e7eb" />
+            <polygon points="190,308 268,115 268,133 190,326" fill="#ffffff" />
+          </g>
+
+          <!-- Shelf 2 -->
+          <g stroke="#374151" stroke-width="1.1">
+            <polygon points="352,115 388,115 310,308 274,308" fill="#f9fafb" />
+            <polygon points="274,308 310,308 310,326 274,326" fill="#e5e7eb" />
+            <polygon points="310,308 388,115 388,133 310,326" fill="#ffffff" />
+          </g>
+
+          <!-- Shelf 3 (Aisle 3 Target Shelf with Shelf Sensor) -->
+          <g stroke="#374151" stroke-width="1.1">
+            <polygon points="472,115 508,115 430,308 394,308" fill="#f9fafb" />
+            <polygon points="394,308 430,308 430,326 394,326" fill="#e5e7eb" />
+            <polygon points="430,308 508,115 508,133 430,326" fill="#ffffff" />
+
+            <!-- Shelf Sensor Slot (Cartridge Slot in Aisle 3) -->
+            <g id="shelf-sensor-group">
+              <polygon id="shelf-sensor-slot" points="474,174 489,174 481,196 466,196" fill="#e5e7eb" stroke="#374151" stroke-width="1.2" />
+              <circle id="shelf-sensor-beacon" cx="478" cy="185" r="5.5" fill="#9ca3af" stroke="#111827" stroke-width="1" />
+            </g>
+          </g>
+
+          <!-- Shelf 4 (Right Aisle) -->
+          <g stroke="#374151" stroke-width="1.1">
+            <polygon points="592,115 628,115 550,308 514,308" fill="#f9fafb" />
+            <polygon points="514,308 550,308 550,326 514,326" fill="#e5e7eb" />
+            <polygon points="550,308 628,115 628,133 550,326" fill="#ffffff" />
+          </g>
+
+          <!-- Promo Display Tables on Right -->
+          <g stroke="#374151" stroke-width="1.1">
+            <polygon points="695,180 735,180 723,210 683,210" fill="#f9fafb" />
+            <polygon points="683,210 723,210 723,222 683,222" fill="#e5e7eb" />
+            <polygon points="723,210 735,180 735,192 723,222" fill="#ffffff" />
+
+            <polygon points="665,248 705,248 693,278 653,278" fill="#f9fafb" />
+            <polygon points="653,278 693,278 693,290 653,290" fill="#e5e7eb" />
+            <polygon points="693,278 705,248 705,260 693,290" fill="#ffffff" />
+          </g>
+
+          <!-- Entrance Security Gates (Bottom Left) -->
+          <g stroke="#1f2937" stroke-width="1.4" fill="#ffffff">
+            <rect x="132" y="346" width="5" height="36" rx="1" />
+            <rect x="137" y="352" width="13" height="24" fill="none" stroke-width="1" />
+            <rect x="195" y="346" width="5" height="36" rx="1" />
+            <rect x="200" y="352" width="13" height="24" fill="none" stroke-width="1" />
+            <rect x="258" y="346" width="5" height="36" rx="1" />
+            <rect x="263" y="352" width="13" height="24" fill="none" stroke-width="1" />
+          </g>
+
+          <!-- Checkout / Cashier Counters & Gates (Bottom Right) -->
+          <g stroke="#1f2937" stroke-width="1.2" fill="#ffffff">
+            <!-- Exit Gate -->
+            <rect x="435" y="346" width="5" height="36" rx="1" />
+            <rect x="440" y="352" width="13" height="24" fill="none" stroke-width="1" />
+
+            <!-- Cashier Counter 1 -->
+            <polygon points="525,332 548,332 532,374 509,374" fill="#f3f4f6" />
+            <polygon points="509,374 532,374 532,386 509,386" fill="#e5e7eb" />
+            <polygon points="532,374 548,332 548,344 532,386" fill="#ffffff" />
+            <!-- Cashier Stick Figure 1 -->
+            <g transform="translate(556, 336)">
+              <circle cx="0" cy="0" r="4.5" fill="#ffffff" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="4.5" x2="0" y2="20" stroke="#111827" stroke-width="1.4" />
+              <line x1="-6" y1="11" x2="6" y2="11" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="20" x2="-4" y2="33" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="20" x2="4" y2="33" stroke="#111827" stroke-width="1.4" />
+            </g>
+
+            <!-- Cashier Counter 2 -->
+            <polygon points="602,332 625,332 609,374 586,374" fill="#f3f4f6" />
+            <polygon points="586,374 609,374 609,386 586,386" fill="#e5e7eb" />
+            <polygon points="609,374 625,332 625,344 609,386" fill="#ffffff" />
+            <!-- Cashier Stick Figure 2 -->
+            <g transform="translate(633, 336)">
+              <circle cx="0" cy="0" r="4.5" fill="#ffffff" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="4.5" x2="0" y2="20" stroke="#111827" stroke-width="1.4" />
+              <line x1="-6" y1="11" x2="6" y2="11" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="20" x2="-4" y2="33" stroke="#111827" stroke-width="1.4" />
+              <line x1="0" y1="20" x2="4" y2="33" stroke="#111827" stroke-width="1.4" />
+            </g>
+          </g>
+
+          <!-- Subtle Journey Path Guide (Light gray architectural trace) -->
+          <path d="M 168 372 L 195 316 L 315 316 L 385 130 L 428 130 L 388 265 L 478 265 L 478 372"
+                fill="none" stroke="#e5e7eb" stroke-width="2" stroke-linejoin="round" />
+
+          <!-- ROOF-MOUNTED CEILING NODES (Maximum 3 per store: Entrance, Aisle 3 Handoff, Cashier) -->
+          <!-- CEILING NODE 1: Entrance Node (Overhead black box above Entrance Vestibule) -->
+          <g id="node-1" class="transition-all duration-300">
+            <!-- Ceiling mount stem & coverage projection ring on floor -->
+            <ellipse id="node-1-ring" cx="235" cy="364" rx="22" ry="6.5" fill="none" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3 3" />
+            <line x1="235" y1="262" x2="235" y2="274" stroke="#6b7280" stroke-width="1.4" />
+            <!-- Compact Isometric Ceiling Black Box -->
+            <polygon points="223,274 237,270 247,274 233,278" fill="#374151" stroke="#111827" stroke-width="0.9" />
+            <polygon points="223,274 233,278 233,284 223,280" fill="#111827" stroke="#111827" stroke-width="0.9" />
+            <polygon points="233,278 247,274 247,280 233,284" fill="#1f2937" stroke="#111827" stroke-width="0.9" />
+            <!-- Active status LED & downward Wi-Fi Aware waves -->
+            <circle cx="238" cy="279" r="1.4" fill="#34d399" />
+            <path d="M 229 287 Q 235 291 241 287" fill="none" stroke="#4b5563" stroke-width="1.1" stroke-linecap="round" />
+            <path d="M 226 291 Q 235 296 244 291" fill="none" stroke="#9ca3af" stroke-width="1" stroke-linecap="round" />
+          </g>
+
+          <!-- CEILING NODE 2: Aisle 3 Node (Overhead black box above Aisle 3) -->
+          <g id="node-2" class="transition-all duration-300">
+            <ellipse id="node-2-ring" cx="424" cy="145" rx="22" ry="6.5" fill="none" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3 3" />
+            <line x1="424" y1="48" x2="424" y2="62" stroke="#6b7280" stroke-width="1.4" />
+            <!-- Compact Isometric Ceiling Black Box -->
+            <polygon points="412,62 426,58 436,62 422,66" fill="#374151" stroke="#111827" stroke-width="0.9" />
+            <polygon points="412,62 422,66 422,72 412,68" fill="#111827" stroke="#111827" stroke-width="0.9" />
+            <polygon points="422,66 436,62 436,68 422,72" fill="#1f2937" stroke="#111827" stroke-width="0.9" />
+            <!-- Active status LED & downward Wi-Fi Aware waves -->
+            <circle cx="427" cy="67" r="1.4" fill="#34d399" />
+            <path d="M 418 75 Q 424 79 430 75" fill="none" stroke="#4b5563" stroke-width="1.1" stroke-linecap="round" />
+            <path d="M 415 79 Q 424 84 433 79" fill="none" stroke="#9ca3af" stroke-width="1" stroke-linecap="round" />
+          </g>
+
+          <!-- CEILING NODE 3: Cashier Node (Overhead black box above Checkout Zone) -->
+          <g id="node-3" class="transition-all duration-300">
+            <ellipse id="node-3-ring" cx="536" cy="364" rx="22" ry="6.5" fill="none" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3 3" />
+            <line x1="536" y1="262" x2="536" y2="274" stroke="#6b7280" stroke-width="1.4" />
+            <!-- Compact Isometric Ceiling Black Box -->
+            <polygon points="524,274 538,270 548,274 534,278" fill="#374151" stroke="#111827" stroke-width="0.9" />
+            <polygon points="524,274 534,278 534,284 524,280" fill="#111827" stroke="#111827" stroke-width="0.9" />
+            <polygon points="534,278 548,274 548,280 534,284" fill="#1f2937" stroke="#111827" stroke-width="0.9" />
+            <!-- Active status LED & downward Wi-Fi Aware waves -->
+            <circle cx="539" cy="279" r="1.4" fill="#34d399" />
+            <path d="M 530 287 Q 536 291 542 287" fill="none" stroke="#4b5563" stroke-width="1.1" stroke-linecap="round" />
+            <path d="M 527 291 Q 536 296 545 291" fill="none" stroke="#9ca3af" stroke-width="1" stroke-linecap="round" />
+          </g>
+
+          <!-- CLEAN NON-OVERLAPPING CALLOUT PILLS & LEADER LINES (All strictly inside the floor polygon) -->
+          <!-- Callout 1: Entrance Node (Positioned cleanly above Roof Node 1) -->
+          <g id="label-node-1" filter="url(#pillShadow)">
+            <line x1="235" y1="262" x2="235" y2="252" stroke="#9ca3af" stroke-width="1" stroke-dasharray="2 2" />
+            <rect x="172" y="230" width="126" height="22" rx="11" fill="#ffffff" stroke="#d1d5db" stroke-width="1" />
+            <circle cx="185" cy="241" r="6" fill="#111827" />
+            <text x="185" y="244" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff">1</text>
+            <text x="196" y="244.5" font-size="10" font-weight="600" fill="#111827">Entrance Node</text>
+          </g>
+
+          <!-- Callout 2: Ask & Navigate (Cleanly centered in open Aisle 2 corridor, well clear of shelves) -->
+          <g id="label-step-2" filter="url(#pillShadow)">
+            <rect x="278" y="210" width="124" height="22" rx="11" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" />
+            <circle cx="290" cy="221" r="6" fill="#d1d5db" />
+            <text x="290" y="224" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff">2</text>
+            <text x="301" y="224.5" font-size="9.5" font-weight="500" fill="#4b5563">Ask &amp; navigate</text>
+          </g>
+
+          <!-- Callout 3: Node handoff (Positioned cleanly to the left of Roof Node 2) -->
+          <g id="label-node-2" filter="url(#pillShadow)">
+            <line x1="412" y1="66" x2="394" y2="66" stroke="#9ca3af" stroke-width="1" stroke-dasharray="2 2" />
+            <rect x="280" y="55" width="114" height="22" rx="11" fill="#ffffff" stroke="#d1d5db" stroke-width="1" />
+            <circle cx="292" cy="66" r="6" fill="#9ca3af" />
+            <text x="292" y="69" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff">3</text>
+            <text x="303" y="69.5" font-size="9.5" font-weight="600" fill="#374151">Node handoff</text>
+          </g>
+
+          <!-- Callout 4: Ask · same session (Positioned cleanly in open Aisle 3/4 space, clear of Shelf 3 & 4) -->
+          <g id="label-step-4" filter="url(#pillShadow)">
+            <rect x="442" y="138" width="134" height="22" rx="11" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" />
+            <circle cx="454" cy="149" r="6" fill="#9ca3af" />
+            <text x="454" y="152" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff">4</text>
+            <text x="465" y="152.5" font-size="9.5" font-weight="500" fill="#4b5563">Ask · same session</text>
+          </g>
+
+          <!-- Shelf Sensor Callout (Appears in Step 4A cleanly inside right promo area well inside border) -->
+          <g id="shelf-sensor-callout" opacity="0" class="transition-opacity duration-300" filter="url(#pillShadow)">
+            <line x1="486" y1="185" x2="508" y2="185" stroke="#d97706" stroke-width="1.3" />
+            <rect x="508" y="173" width="134" height="24" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.2" />
+            <text x="518" y="188.5" font-size="9.5" font-weight="700" fill="#92400e">⚠ Aisle 3: Out of stock</text>
+          </g>
+
+          <!-- Callout 5: Pay at cashier (Positioned cleanly above Roof Node 3) -->
+          <g id="label-node-3" filter="url(#pillShadow)">
+            <line x1="536" y1="262" x2="536" y2="252" stroke="#9ca3af" stroke-width="1" stroke-dasharray="2 2" />
+            <rect x="472" y="230" width="126" height="22" rx="11" fill="#ffffff" stroke="#d1d5db" stroke-width="1" />
+            <circle cx="485" cy="241" r="6" fill="#9ca3af" />
+            <text x="485" y="244" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff">5</text>
+            <text x="496" y="244.5" font-size="10" font-weight="600" fill="#374151">Pay at cashier</text>
+          </g>
+
+          <!-- DYNAMIC WI-FI AWARE LINK & SESSION TAG -->
+          <g id="wifi-link-group" opacity="0" class="transition-opacity duration-300">
+            <line id="wifi-link-line" x1="176" y1="348" x2="225" y2="342"
+                  stroke="#111827" stroke-width="2" class="wifi-link-active" />
+            <!-- Pill Tag for Session ID (Positioned cleanly inside open floor center) -->
+            <g id="wifi-session-badge" transform="translate(262, 336)">
+              <rect x="0" y="0" width="146" height="22" rx="11" fill="#111827" />
+              <text id="wifi-session-text" x="73" y="14.5" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600" fill="#ffffff">
+                Wi-Fi Aware · Session 7F3A
+              </text>
+            </g>
+          </g>
+
+          <!-- STICK FIGURE ACTOR: ALEX -->
+          <g id="actor-alex" transform="translate(152, 345)" opacity="0">
+            <!-- Soft ground shadow -->
+            <ellipse cx="0" cy="36" rx="10" ry="3.5" fill="rgba(17,24,39,0.16)" />
+            <!-- Head -->
+            <circle cx="0" cy="0" r="6.5" fill="#ffffff" stroke="#111827" stroke-width="2" />
+            <!-- Torso -->
+            <line x1="0" y1="6.5" x2="0" y2="23" stroke="#111827" stroke-width="2" stroke-linecap="round" />
+            <!-- Left Arm -->
+            <line x1="0" y1="12" x2="-8" y2="20" stroke="#111827" stroke-width="2" stroke-linecap="round" />
+            <!-- Right Arm holding phone -->
+            <polyline points="0,12 8,15 11,9" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Tiny Phone Icon in hand -->
+            <rect x="9.5" y="4" width="5" height="8" rx="1" fill="#111827" />
+            <!-- Legs -->
+            <line x1="0" y1="23" x2="-6" y2="36" stroke="#111827" stroke-width="2" stroke-linecap="round" />
+            <line x1="0" y1="23" x2="6" y2="36" stroke="#111827" stroke-width="2" stroke-linecap="round" />
+            <!-- Name Tag Pill -->
+            <g transform="translate(-18, -24)">
+              <rect x="0" y="0" width="36" height="15" rx="7.5" fill="#111827" />
+              <text x="18" y="10.5" text-anchor="middle" font-size="8.5" font-weight="600" fill="#ffffff">Alex</text>
+            </g>
+          </g>
+
+          <!-- STICK FIGURE ACTOR: STORE ASSOCIATE (Step 4C) -->
+          <g id="actor-staff" transform="translate(670, 150)" opacity="0">
+            <ellipse cx="0" cy="36" rx="10" ry="3.5" fill="rgba(217,119,6,0.22)" />
+            <circle cx="0" cy="0" r="6.5" fill="#fef3c7" stroke="#b45309" stroke-width="2" />
+            <line x1="0" y1="6.5" x2="0" y2="23" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+            <line x1="0" y1="12" x2="-8" y2="18" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+            <line x1="0" y1="12" x2="8" y2="18" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+            <line x1="0" y1="23" x2="-6" y2="36" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+            <line x1="0" y1="23" x2="6" y2="36" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+            <!-- Matching Amber Token Badge (No Name, No History) -->
+            <g transform="translate(-26, -25)">
+              <rect x="0" y="0" width="52" height="16" rx="8" fill="#f59e0b" />
+              <text x="26" y="11" text-anchor="middle" font-size="8.5" font-weight="700" fill="#ffffff">AMBER</text>
+            </g>
+          </g>
+        </svg>
+
+        <!-- FLOATING OVERLAY CARDS INSIDE STORE STAGE -->
+        <!-- Scene 0 Narrative Card ("A shopper walks in...") -->
+        <div id="scene0-card"
+          class="hidden absolute top-3 left-3 max-w-[240px] bg-white/95 backdrop-blur-xs border border-gray-300 rounded-2xl p-3 shadow-md transition-all duration-300">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-gray-900"></span>
+            <span class="text-[10px] font-mono-code uppercase tracking-wider text-gray-500">Zero-Identity Entry</span>
+          </div>
+          <p class="text-xs font-semibold text-gray-900 leading-snug">
+            “A shopper walks in. No app login, no account, no identity.”
+          </p>
+        </div>
+
+        <!-- Step 4 Staff App Card (Plain, no name, no history) -->
+        <div id="staff-app-card"
+          class="hidden absolute top-3 right-3 w-60 bg-white border-2 border-amber-500 rounded-2xl p-2.5 shadow-lg transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[10px] font-mono-code uppercase tracking-wider font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              Staff App Dispatch
+            </span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white">
+              ● AMBER
+            </span>
+          </div>
+          <p class="font-mono-code text-[11px] font-semibold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5">
+            Session 7F3A · Aisle 3 · needs cartridge X
+          </p>
+          <p class="text-[10px] text-gray-500 mt-1">
+            Plain dispatch only · No shopper name · No history
+          </p>
+        </div>
+
+        <!-- Step 5 Cashier POS Screen Card -->
+        <div id="cashier-terminal-card"
+          class="hidden absolute top-3 right-3 w-60 bg-white border-2 border-gray-900 rounded-2xl p-2.5 shadow-lg transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[10px] font-mono-code uppercase tracking-wider font-bold text-gray-900">
+              Cashier POS Scan
+            </span>
+            <span id="cashier-status-badge" class="text-[10px] font-mono-code px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+              IDs + Qty only
+            </span>
+          </div>
+          <div class="font-mono-code text-[10.5px] text-gray-800 bg-gray-50 rounded-xl p-2 border border-gray-200 space-y-0.5">
+            <div class="flex justify-between"><span>SKU-4092 (Cartridge)</span><span>×1</span></div>
+            <div class="flex justify-between"><span>SKU-1108 (PTFE Tape)</span><span>×1</span></div>
+            <div class="flex justify-between"><span>SKU-2241 (Grease)</span><span>×1</span></div>
+          </div>
+          <div id="cashier-payment-banner" class="hidden mt-1.5 text-center text-[10.5px] font-semibold bg-emerald-600 text-white rounded-lg py-1">
+            ✓ Payment complete (separate txn)
+          </div>
+        </div>
+
+        <!-- Closing Overlay Takeaway Box -->
+        <div id="closing-overlay"
+          class="hidden absolute inset-0 bg-white/85 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center transition-all duration-500">
+          <div id="closing-takeaway-box" class="max-w-lg bg-white border-2 border-gray-900 rounded-3xl p-6 shadow-2xl transform transition-all duration-500">
+            <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-code uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-3">
+              <span>Zero Linkage Guarantee</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-gray-900 leading-snug">
+              “What the store keeps: one anonymous conversation (no photos, names or link to a person) and one sale.”
+            </h3>
+            <p class="text-xs text-gray-500 mt-2">
+              Conversation and receipt remain cryptographically unlinked from each other and from Alex.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLOSING TIMELINE STRIP (Always visible as subtle tracker, animates left-to-right in Closing) -->
+      <div id="timeline-strip-container" class="w-full mt-2.5 px-1">
+        <div class="bg-white border border-gray-200 rounded-2xl px-3 py-2 flex flex-wrap items-center justify-between gap-1.5 shadow-2xs">
+          <span class="text-[10px] font-mono-code uppercase tracking-wider text-gray-400 mr-1">Lifecycle:</span>
+          <div id="timeline-steps" class="flex-1 flex flex-wrap items-center justify-between gap-1 text-[11px]">
+            <span data-tl="0" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Joined</span>
+            <span class="text-gray-300">→</span>
+            <span data-tl="1" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Shared list</span>
+            <span class="text-gray-300">→</span>
+            <span data-tl="2" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Shared photo</span>
+            <span class="text-gray-300">→</span>
+            <span data-tl="3" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Bought</span>
+            <span class="text-gray-300">→</span>
+            <span data-tl="4" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Session closed</span>
+            <span class="text-gray-300">→</span>
+            <span data-tl="5" class="timeline-step px-2 py-0.5 rounded-full border border-gray-200 text-gray-400 bg-gray-50 transition-all duration-300">Anonymized</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- BOTTOM PRESENTER SCRIPT & SCENE NAVIGATION CARD (Inspired by Reference Design) -->
+  <footer class="w-full max-w-[960px] mx-auto px-4 pb-5 pt-1 z-30">
+    <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:px-6 sm:py-4 shadow-lg">
+      <!-- Top Row: Act Group, Sub-step Title, Time, Highlight & Presenter Tip -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="card-act-badge" class="font-mono-code text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700 border border-gray-200">
+            Start · Part 1 of 2
+          </span>
+          <h2 id="card-title" class="text-sm sm:text-base font-bold text-gray-900">
+            0a · Shopper Enters &amp; Voice Trigger
+          </h2>
+          <span id="card-highlight-badge" class="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-900 text-white">
+            Focus: Phone &amp; Entrance
+          </span>
+        </div>
+        <span id="card-tip-badge" class="hidden text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+          Tip
+        </span>
+      </div>
+
+      <!-- Spoken Narration Script ("Say") -->
+      <p id="card-script" class="text-xs sm:text-sm text-gray-700 leading-relaxed mb-3">
+        Meet Alex... “Hey Siri, open my tap-repair list and check if this store has an assistant.” No login, no account.
+      </p>
+
+      <!-- Bottom Navigation Controls & Expanded 16-Step Dots -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-gray-100">
+        <div class="flex items-center gap-2">
+          <button id="btn-prev" type="button"
+            class="px-3.5 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer">
+            ← Back
+          </button>
+          <button id="btn-next" type="button"
+            class="px-3.5 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer">
+            Next →
+          </button>
+          <span id="card-session-footer" class="font-mono-code text-[11px] text-gray-400 ml-1 hidden sm:inline">
+            No identity
+          </span>
+        </div>
+
+        <!-- 16-Step Transition Pills grouped by Act -->
+        <div id="scene-dots" class="flex flex-wrap items-center gap-1" role="tablist" aria-label="Storytelling sub-steps">
+          <!-- Buttons injected by JS -->
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      // 12 Streamlined Sub-Steps across the 7 Narrative Scenes
+      const STEPS = [
+        // ACT 0: START (Split into 0a: Siri Voice Trigger & 0b: Siri -> Elowen Handoff)
+        {
+          id: '0a',
+          actLabel: 'Start · 1/2',
+          dotLabel: '0a',
+          title: '0a · Alex Enters & Speaks to Siri',
+          time: '0:00–0:14',
+          focus: 'Focus: Phone & Siri Voice Prompt',
+          tip: 'No app login, no account, no identity',
+          sessionFooter: 'No identity · Siri listening',
+          script: '“Meet Alex... ‘Hey Siri, open my tap-repair list and check if this store has an assistant.’ No login, no account.”'
+        },
+        {
+          id: '0b',
+          actLabel: 'Start · 2/2',
+          dotLabel: '0b',
+          title: '0b · Siri Hands Off Locally to Elowen',
+          time: '0:14–0:25',
+          focus: 'Focus: Phone (Local Elowen Vault)',
+          tip: 'Siri routes the request on-device without creating a profile',
+          sessionFooter: 'No identity · Elowen ready',
+          script: '“Siri asks Elowen to do the work. Elowen opens Alex’s local tap-repair list on the phone—still zero identity.”'
+        },
+
+        // ACT 1: STEP 1 - PAIR WITH A NODE (2 sub-steps)
+        {
+          id: '1a',
+          actLabel: 'Step 1 · 1/2',
+          dotLabel: '1a',
+          title: '1 · Radar Detects Entrance Node',
+          time: '0:25–0:38',
+          focus: 'Focus: Entrance Node & Radar',
+          tip: 'Local discovery without GPS tracking',
+          sessionFooter: '1 Node found · awaiting code',
+          script: '“The radar finds the Entrance Node. The phone shows ‘1 Node found · Entrance Node’ and Alex taps Connect.”'
+        },
+        {
+          id: '1b',
+          actLabel: 'Step 1 · 2/2',
+          dotLabel: '1b',
+          title: '1 · Store Code & Anonymous Link',
+          time: '0:38–0:55',
+          focus: 'Focus: Entrance Node & Dashed Link',
+          tip: 'Try “Preview Returning-Visit Flash” below phone',
+          sessionFooter: 'Session 7F3A · anonymous',
+          script: '“First visit, so Alex enters the store code. The code lets you in, it doesn’t say who you are. Wi-Fi Aware opens Session 7F3A.”'
+        },
+        // ACT 2: STEP 2 - ASK AND NAVIGATE (2 steps: cloud agents work -> private on-device check)
+        {
+          id: '2a',
+          actLabel: 'Step 2 · 1/2',
+          dotLabel: '2a',
+          title: '2 · List + Photo Cross Line & Cloud Agents Run',
+          time: '0:55–1:30',
+          focus: 'Focus: Privacy Line & Store Agents',
+          tip: 'Diagnose swaps “washer” → “cartridge”',
+          sessionFooter: 'Session 7F3A · Cloud active',
+          script: '“Only the list and the photo leave the phone. The Orchestrator calls Diagnose (replacing ‘washer’ with ‘cartridge’), then Product search, then Complementary search.”'
+        },
+        {
+          id: '2b',
+          actLabel: 'Step 2 · 2/2',
+          dotLabel: '2b',
+          title: '2 · Private On-Device Check on Phone',
+          time: '1:30–1:45',
+          focus: 'Focus: Phone Side of Privacy Line',
+          tip: '⏸ Pause one beat here — strongest privacy moment',
+          sessionFooter: 'Session 7F3A · On-device check',
+          script: '“The reply returns across the line. On the phone, the wrench is struck through with a badge reading ‘Processed on your phone only’.”'
+        },
+
+        // ACT 3: STEP 3 - NODE HANDOFF (Merged into 1 seamless walk + handoff transition)
+        {
+          id: '3',
+          actLabel: 'Step 3',
+          dotLabel: '3',
+          title: '3 · Seamless Node Handoff (Same Session)',
+          time: '1:45–2:10',
+          focus: 'Focus: Entrance Node → Node handoff',
+          tip: 'Session ID stays 7F3A; exact coordinates unknown',
+          sessionFooter: 'Node 2 · Session 7F3A',
+          script: '“Alex walks toward the aisle. The dashed link leaves the Entrance Node and reconnects to Node 2—same session, no pairing screen.”'
+        },
+
+        // ACT 4: STEP 4 - ASK AGAIN, SAME SESSION (2 steps: shelf sensor + consent -> staff card + guide)
+        {
+          id: '4a',
+          actLabel: 'Step 4 · 1/2',
+          dotLabel: '4a',
+          title: '4 · Amber Shelf Sensor & Explicit Consent',
+          time: '2:10–2:30',
+          focus: 'Focus: Amber Shelf Sensor & Phone Prompt',
+          tip: 'Rule: Call staff chip stays off until Alex taps Yes',
+          sessionFooter: 'Session 7F3A · awaiting consent',
+          script: '“The shelf sensor shows the cartridge is out of stock. A Siri prompt appears: ‘Call an associate?’ and Alex taps Yes.”'
+        },
+        {
+          id: '4b',
+          actLabel: 'Step 4 · 2/2',
+          dotLabel: '4b',
+          title: '4 · Plain Staff Dispatch & 3-Step Project Guide',
+          time: '2:30–3:00',
+          focus: 'Focus: Plain Staff Card & Matching Token',
+          tip: 'No shopper name or history on staff card',
+          sessionFooter: 'Session 7F3A · Guide ready',
+          script: '“Call staff sends only ‘Session 7F3A · Aisle 3 · needs cartridge X’. The associate brings the part with a matching AMBER token, and Project guiding shows a 20-min guide.”'
+        },
+
+        // ACT 5: STEP 5 - PAY AT CASHIER (2 steps: QR scan -> self-close & RAM wipe)
+        {
+          id: '5a',
+          actLabel: 'Step 5 · 1/2',
+          dotLabel: '5a',
+          title: '5 · Cashier Scan (Product IDs & Quantities Only)',
+          time: '3:00–3:18',
+          focus: 'Focus: QR Scan & POS Terminal',
+          tip: 'Payment is a separate, unlinked transaction',
+          sessionFooter: 'Session 7F3A · Cashier scan',
+          script: '“Alex walks to the cashier Node. The scan carries only product IDs and quantities. Payment is a separate transaction.”'
+        },
+        {
+          id: '5b',
+          actLabel: 'Step 5 · 2/2',
+          dotLabel: '5b',
+          title: '5 · Phone Self-Closes Session & RAM Empties',
+          time: '3:18–3:35',
+          focus: 'Focus: Session RAM Emptying',
+          tip: 'Side note: Walk-out without scan auto-closes after 20 min',
+          sessionFooter: 'Session closed · RAM wiped',
+          script: '“The phone saves the purchase and sends ‘Close’ over Wi-Fi Aware. The Node confirms, and the Orchestrator’s session memory box visibly empties.”'
+        },
+
+        // ACT 6: CLOSING (Merged into 1 cohesive timeline pulse & zero-linkage summary)
+        {
+          id: '6',
+          actLabel: 'Closing',
+          dotLabel: 'Closing',
+          title: 'Closing · Lifecycle Timeline & Zero-Linkage Guarantee',
+          time: '3:35–3:50',
+          focus: 'Focus: Privacy Pulse & Final Summary',
+          tip: 'One anonymous conversation + one unlinked sale',
+          sessionFooter: 'Zero linkage complete',
+          script: '“The store keeps one anonymous conversation and one sale, not linked to each other or to Alex.”'
+        }
+      ];
+
+      let currentStep = 0;
+      let activeTimers = [];
+
+      function clearAllTimers() {
+        activeTimers.forEach((id) => clearTimeout(id));
+        activeTimers = [];
+      }
+
+      function schedule(fn, delay) {
+        const id = setTimeout(fn, delay);
+        activeTimers.push(id);
+        return id;
+      }
+
+      // DOM References
+      const zonePhone = document.getElementById('zone-phone');
+      const phoneChassis = document.getElementById('phone-chassis');
+      const zoneCloud = document.getElementById('zone-cloud');
+      const zoneStore = document.getElementById('zone-store');
+      const privacyLine = document.getElementById('privacy-line');
+      const crossingPacket = document.getElementById('crossing-packet');
+      const crossingPacketText = document.getElementById('crossing-packet-text');
+
+      const phoneAppDot = document.getElementById('phone-app-dot');
+      const phoneAppTitle = document.getElementById('phone-app-title');
+      const phoneSessionStatus = document.getElementById('phone-session-status');
+      const phoneScreenBody = document.getElementById('phone-screen-body');
+      const phoneInputPlaceholder = document.getElementById('phone-input-placeholder');
+      const btnReturningFlash = document.getElementById('btn-returning-flash');
+
+      const cloudContainer = document.getElementById('cloud-container');
+      const cloudSessionTag = document.getElementById('cloud-session-tag');
+      const sessionMemoryBox = document.getElementById('session-memory-box');
+      const sessionMemoryContent = document.getElementById('session-memory-content');
+
+      const chipDiagnose = document.getElementById('chip-diagnose');
+      const chipProduct = document.getElementById('chip-product');
+      const chipComplementary = document.getElementById('chip-complementary');
+      const chipGuiding = document.getElementById('chip-guiding');
+      const chipStaff = document.getElementById('chip-staff');
+
+      const actorAlex = document.getElementById('actor-alex');
+      const actorStaff = document.getElementById('actor-staff');
+      const wifiLinkGroup = document.getElementById('wifi-link-group');
+      const wifiLinkLine = document.getElementById('wifi-link-line');
+      const wifiSessionBadge = document.getElementById('wifi-session-badge');
+      const wifiSessionText = document.getElementById('wifi-session-text');
+
+      const node1 = document.getElementById('node-1');
+      const node2 = document.getElementById('node-2');
+      const node3 = document.getElementById('node-3');
+      const shelfSensorSlot = document.getElementById('shelf-sensor-slot');
+      const shelfSensorBeacon = document.getElementById('shelf-sensor-beacon');
+      const shelfSensorCallout = document.getElementById('shelf-sensor-callout');
+
+      const scene0Card = document.getElementById('scene0-card');
+      const staffAppCard = document.getElementById('staff-app-card');
+      const cashierTerminalCard = document.getElementById('cashier-terminal-card');
+      const cashierPaymentBanner = document.getElementById('cashier-payment-banner');
+      const closingOverlay = document.getElementById('closing-overlay');
+      const closingTakeawayBox = document.getElementById('closing-takeaway-box');
+
+      const headerTimeBadge = document.getElementById('header-time-badge');
+      const headerSessionPill = document.getElementById('header-session-pill');
+      const cardActBadge = document.getElementById('card-act-badge');
+      const cardTitle = document.getElementById('card-title');
+      const cardHighlightBadge = document.getElementById('card-highlight-badge');
+      const cardTipBadge = document.getElementById('card-tip-badge');
+      const cardScript = document.getElementById('card-script');
+      const cardSessionFooter = document.getElementById('card-session-footer');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnReplay = document.getElementById('btn-replay');
+      const sceneDotsContainer = document.getElementById('scene-dots');
+
+      // Build 16 Sub-Step Navigation Pills
+      function buildStepButtons() {
+        if (!sceneDotsContainer) return;
+        sceneDotsContainer.innerHTML = '';
+        STEPS.forEach((step, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = step.dotLabel;
+          btn.title = step.title;
+          btn.className = 'scene-dot px-2 h-6 rounded-full text-[10px] font-mono-code font-semibold transition flex items-center justify-center cursor-pointer border';
+          btn.addEventListener('click', () => goToStep(idx));
+          sceneDotsContainer.appendChild(btn);
+        });
+      }
+
+      function updateStepButtons() {
+        if (!sceneDotsContainer) return;
+        const buttons = sceneDotsContainer.querySelectorAll('.scene-dot');
+        buttons.forEach((btn, idx) => {
+          if (idx === currentStep) {
+            btn.className = 'scene-dot px-2.5 h-6 rounded-full text-[10px] font-mono-code font-bold bg-gray-900 text-white border border-gray-900 shadow-xs transition cursor-pointer';
+          } else if (idx < currentStep) {
+            btn.className = 'scene-dot px-2 h-6 rounded-full text-[10px] font-mono-code font-medium bg-gray-200/80 text-gray-800 border border-gray-300 hover:bg-gray-300 transition cursor-pointer';
+          } else {
+            btn.className = 'scene-dot px-2 h-6 rounded-full text-[10px] font-mono-code font-medium bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100 transition cursor-pointer';
+          }
+        });
+      }
+
+      function resetTransientVisuals() {
+        clearAllTimers();
+
+        if (scene0Card) scene0Card.classList.add('hidden');
+        if (staffAppCard) staffAppCard.classList.add('hidden');
+        if (cashierTerminalCard) cashierTerminalCard.classList.add('hidden');
+        if (cashierPaymentBanner) cashierPaymentBanner.classList.add('hidden');
+        if (closingOverlay) closingOverlay.classList.add('hidden');
+        if (closingTakeawayBox) closingTakeawayBox.classList.add('opacity-0', 'translate-y-2');
+        if (btnReturningFlash) {
+          btnReturningFlash.classList.add('hidden');
+          btnReturningFlash.classList.remove('inline-flex');
+        }
+
+        if (crossingPacket) {
+          crossingPacket.classList.add('opacity-0');
+          crossingPacket.style.transform = 'translate(-50%, -50%) scale(0.95)';
+        }
+
+        if (privacyLine) privacyLine.classList.remove('privacy-line-pulse');
+
+        document.querySelectorAll('.agent-chip').forEach((chip) => {
+          chip.classList.remove('agent-chip-active');
+        });
+
+        if (node1) node1.removeAttribute('filter');
+        if (node2) node2.removeAttribute('filter');
+        if (node3) node3.removeAttribute('filter');
+
+        if (actorStaff) {
+          actorStaff.classList.add('opacity-0');
+          actorStaff.setAttribute('transform', 'translate(670, 150)');
+        }
+
+        if (shelfSensorSlot) shelfSensorSlot.setAttribute('fill', '#e5e7eb');
+        if (shelfSensorBeacon) {
+          shelfSensorBeacon.setAttribute('fill', '#9ca3af');
+          shelfSensorBeacon.classList.remove('sensor-amber-active');
+        }
+        if (shelfSensorCallout) shelfSensorCallout.setAttribute('opacity', '0');
+      }
+
+      function applyZoneFocus({ phone, cloud, store, phoneSoft = false }) {
+        if (zonePhone) {
+          zonePhone.classList.remove('zone-dimmed', 'zone-soft-dimmed', 'zone-spotlight');
+          if (phone) {
+            zonePhone.classList.add('zone-spotlight');
+          } else if (phoneSoft) {
+            zonePhone.classList.add('zone-soft-dimmed');
+          } else {
+            zonePhone.classList.add('zone-dimmed');
+          }
+        }
+        if (phoneChassis) phoneChassis.classList.toggle('phone-spotlight', phone);
+
+        if (zoneCloud) {
+          zoneCloud.classList.toggle('zone-dimmed', !cloud);
+          zoneCloud.classList.toggle('zone-spotlight', cloud);
+        }
+
+        if (zoneStore) {
+          zoneStore.classList.toggle('zone-dimmed', !store);
+          zoneStore.classList.toggle('zone-spotlight', store);
+        }
+      }
+
+      function highlightTimelineUpTo(maxIdx) {
+        document.querySelectorAll('.timeline-step').forEach((el) => {
+          const stepIdx = parseInt(el.getAttribute('data-tl'), 10);
+          if (stepIdx <= maxIdx) {
+            el.classList.remove('opacity-25');
+            el.classList.add('opacity-100');
+          } else {
+            el.classList.add('opacity-25');
+            el.classList.remove('opacity-100');
+          }
+        });
+      }
+
+      // =========================================================================
+      // STREAMLINED 12-STEP RENDERERS
+      // =========================================================================
+
+      // 0a: Start · Alex Enters & Speaks to Siri
+      function renderStep0a() {
+        applyZoneFocus({ phone: true, cloud: false, store: false });
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(142, 368)');
+          schedule(() => {
+            if (currentStep === 0) actorAlex.setAttribute('transform', 'translate(172, 344)');
+          }, 150);
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '0');
+        if (cloudSessionTag) cloudSessionTag.textContent = 'idle · awaiting session';
+        if (sessionMemoryContent) sessionMemoryContent.textContent = 'empty';
+        if (headerSessionPill) headerSessionPill.textContent = 'No active session';
+        if (scene0Card) scene0Card.classList.remove('hidden');
+
+        if (phoneAppTitle) phoneAppTitle.textContent = 'Siri';
+        if (phoneAppDot) phoneAppDot.className = 'w-2 h-2 rounded-full bg-indigo-500 animate-pulse';
+        if (phoneSessionStatus) {
+          phoneSessionStatus.textContent = 'Listening';
+          phoneSessionStatus.className = 'font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200';
+        }
+        if (phoneInputPlaceholder) phoneInputPlaceholder.textContent = '“Hey Siri, open my tap-repair list...”';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="my-auto flex flex-col items-center text-center px-1.5 space-y-3">
+              <!-- Active Siri Orb & Waveform -->
+              <div class="relative flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-sky-500 p-[2px] shadow-md">
+                  <div class="w-full h-full rounded-full bg-gray-950 flex items-center justify-center gap-1">
+                    <span class="siri-bar w-1 h-5 bg-sky-300 rounded-full"></span>
+                    <span class="siri-bar w-1 h-8 bg-white rounded-full"></span>
+                    <span class="siri-bar w-1 h-6 bg-indigo-300 rounded-full"></span>
+                    <span class="siri-bar w-1 h-8 bg-purple-300 rounded-full"></span>
+                    <span class="siri-bar w-1 h-5 bg-white rounded-full"></span>
+                  </div>
+                </div>
+                <span class="mt-1.5 text-[10px] font-mono-code uppercase tracking-wider text-indigo-600 font-semibold">
+                  Siri · Voice Request
+                </span>
+              </div>
+
+              <!-- Spoken Request Bubble from Alex -->
+              <div class="bg-gray-900 text-white rounded-2xl p-3 text-left w-full shadow-xs">
+                <p class="text-[9.5px] font-mono-code uppercase tracking-wider text-indigo-300 mb-1">Alex → Siri</p>
+                <p class="text-xs font-medium leading-snug">
+                  “Hey Siri, open my tap-repair list and check if this store has an assistant.”
+                </p>
+              </div>
+
+              <!-- Handoff Status Pill -->
+              <div class="w-full bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10.5px] text-indigo-900 font-medium">
+                <span>Siri → Elowen</span>
+                <span class="font-mono-code text-[9.5px]">Routing locally…</span>
+              </div>
+            </div>
+            <div class="text-center text-[10px] text-gray-400">
+              No login · No account · Voice trigger
+            </div>
+          `;
+        }
+      }
+
+      // 0b: Start · Siri Hands Off Locally to Elowen
+      function renderStep0b() {
+        applyZoneFocus({ phone: true, cloud: false, store: false });
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(172, 344)');
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '0');
+        if (cloudSessionTag) cloudSessionTag.textContent = 'idle · awaiting session';
+        if (sessionMemoryContent) sessionMemoryContent.textContent = 'empty';
+        if (headerSessionPill) headerSessionPill.textContent = 'No active session';
+        if (scene0Card) scene0Card.classList.remove('hidden');
+
+        if (phoneAppTitle) phoneAppTitle.textContent = 'Elowen';
+        if (phoneAppDot) phoneAppDot.className = 'w-2 h-2 rounded-full bg-gray-900';
+        if (phoneSessionStatus) {
+          phoneSessionStatus.textContent = 'No account';
+          phoneSessionStatus.className = 'font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-gray-900 text-white';
+        }
+        if (phoneInputPlaceholder) phoneInputPlaceholder.textContent = 'Ready to connect locally...';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2.5 my-auto">
+              <!-- Siri Handoff Confirmation Banner -->
+              <div class="bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10px] text-indigo-900">
+                <span class="font-semibold">↳ Passed from Siri</span>
+                <span class="font-mono-code text-indigo-600">On-Device</span>
+              </div>
+              <div class="flex items-center justify-between bg-gray-900 text-white rounded-xl px-3 py-2">
+                <span class="text-xs font-semibold">Elowen Assistant</span>
+                <span class="text-[10px] font-mono-code bg-white/15 px-2 py-0.5 rounded">Local Vault</span>
+              </div>
+              <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-gray-800">Tap-Repair List</span>
+                  <span class="text-[10px] text-gray-400">Local Notes</span>
+                </div>
+                <ul class="text-xs text-gray-700 space-y-1">
+                  <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>washer</li>
+                  <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>PTFE tape</li>
+                  <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>wrench <span class="text-[10px] text-gray-400">(in toolbox)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="text-center text-[10px] text-gray-400">
+              No login · No cloud account
+            </div>
+          `;
+        }
+      }
+
+      // 1a: Step 1 · Radar Detects Entrance Node
+      function renderStep1a() {
+        applyZoneFocus({ phone: true, cloud: false, store: true });
+        highlightTimelineUpTo(0);
+
+        if (node1) node1.setAttribute('filter', 'url(#nodeGlow)');
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(174, 344)');
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '0');
+        if (cloudSessionTag) cloudSessionTag.textContent = 'idle · node discovered';
+        if (headerSessionPill) headerSessionPill.textContent = '1 Node found · Entrance Node';
+
+        if (phoneAppTitle) phoneAppTitle.textContent = 'Store Assistant';
+        if (phoneAppDot) phoneAppDot.className = 'w-2 h-2 rounded-full bg-gray-900';
+        if (phoneSessionStatus) {
+          phoneSessionStatus.textContent = '1 Node found';
+          phoneSessionStatus.className = 'font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-700';
+        }
+        if (phoneInputPlaceholder) phoneInputPlaceholder.textContent = 'Tap Connect to pair locally...';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="my-auto flex flex-col items-center text-center space-y-2.5">
+              <svg class="w-28 h-28" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="#fafafa" stroke="#d1d5db" stroke-width="1.2" />
+                <circle cx="60" cy="60" r="36" fill="none" stroke="#e5e7eb" stroke-width="1" />
+                <circle cx="60" cy="60" r="20" fill="none" stroke="#e5e7eb" stroke-width="1" />
+                <line x1="8" y1="60" x2="112" y2="60" stroke="#e5e7eb" stroke-width="1" />
+                <line x1="60" y1="8" x2="60" y2="112" stroke="#e5e7eb" stroke-width="1" />
+                <path class="radar-sweep" d="M60,60 L60,8 A52,52 0 0,1 105,34 Z" fill="rgba(17,24,39,0.08)" />
+                <circle cx="84" cy="36" r="6" fill="rgba(17,24,39,0.16)" />
+                <circle cx="84" cy="36" r="3" fill="#111827" />
+                <circle cx="60" cy="60" r="3.5" fill="#111827" />
+              </svg>
+              <div>
+                <p class="text-[11px] font-medium text-gray-500">1 Node found</p>
+                <p class="text-sm font-bold text-gray-900">Entrance Node</p>
+                <p class="text-[10px] text-gray-400">Store assistant · nearby</p>
+              </div>
+              <div class="w-full px-3">
+                <div class="w-full py-2 rounded-full bg-gray-900 text-white text-xs font-semibold shadow-sm">
+                  Connect
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 1b: Step 1 · Store Code & Anonymous Link
+      function renderStep1b() {
+        applyZoneFocus({ phone: true, cloud: false, store: true });
+        highlightTimelineUpTo(0);
+
+        if (node1) node1.setAttribute('filter', 'url(#nodeGlow)');
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(174, 344)');
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '186');
+          wifiLinkLine.setAttribute('y1', '344');
+          wifiLinkLine.setAttribute('x2', '233');
+          wifiLinkLine.setAttribute('y2', '284');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(262, 336)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Wi-Fi Aware · Session 7F3A';
+
+        if (cloudSessionTag) cloudSessionTag.textContent = 'Session 7F3A · anonymous';
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · anonymous';
+
+        if (btnReturningFlash) {
+          btnReturningFlash.classList.remove('hidden');
+          btnReturningFlash.classList.add('inline-flex');
+        }
+
+        if (phoneAppTitle) phoneAppTitle.textContent = 'Store Assistant';
+        if (phoneAppDot) phoneAppDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        if (phoneSessionStatus) {
+          phoneSessionStatus.textContent = 'Session · anonymous';
+          phoneSessionStatus.className = 'font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-gray-900 text-white';
+        }
+        if (phoneInputPlaceholder) phoneInputPlaceholder.textContent = 'Ask anything...';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="my-auto space-y-2.5">
+              <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5">
+                <span class="text-[11px] font-semibold text-gray-800">Entrance Node</span>
+                <span class="font-mono-code text-[10px] font-bold px-2 py-0.5 rounded bg-gray-900 text-white">Session 7F3A</span>
+              </div>
+              <div class="bg-white border-2 border-gray-900 rounded-2xl p-3 space-y-2 shadow-xs">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono-code uppercase tracking-wider text-gray-500">First-Visit Store Code</span>
+                  <span class="text-[10px] text-emerald-700 font-semibold">✓ Verified</span>
+                </div>
+                <div class="grid grid-cols-6 gap-1 font-mono-code text-xs font-bold text-center">
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">4</span>
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">8</span>
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">2</span>
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">9</span>
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">1</span>
+                  <span class="py-1.5 rounded-lg bg-gray-100 border border-gray-300">0</span>
+                </div>
+                <p class="text-[10px] text-gray-500 leading-snug">
+                  The code lets you in — it never says who you are.
+                </p>
+              </div>
+              <div class="bg-gray-900 text-white rounded-xl p-2.5 text-center">
+                <p class="text-[11px] font-semibold">Wi-Fi Aware link active</p>
+                <p class="font-mono-code text-[10px] text-gray-300 mt-0.5">Session · anonymous · 7F3A</p>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Optional Returning-Visit Flash inside Step 1b
+      function triggerReturningVisitFlash() {
+        if (!phoneScreenBody) return;
+        phoneScreenBody.innerHTML = `
+          <div class="my-auto space-y-3 text-center">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-mono-code font-semibold">
+              ⚡ Returning-Visit Path
+            </div>
+            <div class="bg-gray-900 text-white rounded-2xl p-3.5 space-y-1.5 shadow-md">
+              <p class="text-xs font-bold">Welcome back, reconnecting</p>
+              <p class="text-[11px] text-gray-300">
+                No store code needed on repeat visits — ephemeral token rotates automatically.
+              </p>
+              <div class="pt-1">
+                <span class="font-mono-code text-[10px] bg-white/15 px-2.5 py-0.5 rounded-full">
+                  Session 7F3A · anonymous
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+        schedule(() => {
+          if (currentStep === 3) renderStep1b();
+        }, 2600);
+      }
+
+      // 2a: Step 2 · List + Photo Cross Line & Cloud Agents Run
+      function renderStep2a() {
+        applyZoneFocus({ phone: false, cloud: true, store: false, phoneSoft: true });
+        highlightTimelineUpTo(2);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(174, 344)');
+        }
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '186');
+          wifiLinkLine.setAttribute('y1', '344');
+          wifiLinkLine.setAttribute('x2', '233');
+          wifiLinkLine.setAttribute('y2', '284');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(262, 336)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Wi-Fi Aware · Session 7F3A';
+
+        if (crossingPacket && crossingPacketText) {
+          crossingPacketText.textContent = 'Left your phone: list + photo';
+          crossingPacket.classList.remove('opacity-0');
+          crossingPacket.style.transform = 'translate(-50%, -50%) scale(1.03)';
+        }
+
+        if (cloudSessionTag) cloudSessionTag.textContent = 'Session 7F3A · Orchestrator running';
+        if (sessionMemoryContent) {
+          sessionMemoryContent.textContent = 'list + tap photo (no PII)';
+          sessionMemoryContent.className = 'font-mono-code text-[10px] text-gray-800 font-semibold';
+        }
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · Cloud active';
+
+        if (chipDiagnose) chipDiagnose.classList.add('agent-chip-active');
+        schedule(() => {
+          if (currentStep === 4 && chipProduct) chipProduct.classList.add('agent-chip-active');
+        }, 550);
+        schedule(() => {
+          if (currentStep === 4 && chipComplementary) chipComplementary.classList.add('agent-chip-active');
+        }, 1100);
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2 my-auto">
+              <div class="bg-gray-900 text-white rounded-2xl p-2 text-xs space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono-code text-gray-300">Sent across line</span>
+                  <span class="text-[10px]">🚰 tap_valve.jpg</span>
+                </div>
+                <p class="text-[11px] leading-snug">“Check parts for my leaking tap”</p>
+              </div>
+              <div class="bg-gray-50 border border-gray-200 rounded-2xl p-2.5 text-xs space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono-code uppercase font-semibold text-gray-500">Updated Product List</span>
+                  <span class="text-[9.5px] font-mono-code px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Aisle 3</span>
+                </div>
+                <ul class="space-y-1 text-[11px]">
+                  <li class="flex items-center justify-between bg-amber-50/90 border border-amber-200 rounded-lg px-2 py-1">
+                    <div>
+                      <span class="line-through text-gray-400 mr-1">washer</span>
+                      <span class="font-bold text-gray-900">Ceramic cartridge</span>
+                    </div>
+                    <span class="text-[9.5px] font-mono-code font-semibold text-amber-800">Replaced</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-2 py-1">
+                    <span class="font-medium text-gray-800">PTFE thread tape</span>
+                    <span class="text-[9.5px] font-mono-code text-emerald-700 font-semibold">✓ Matched</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-2 py-1">
+                    <span class="font-medium text-gray-800">Silicone valve grease</span>
+                    <span class="text-[9.5px] font-mono-code text-emerald-700 font-semibold">+ Added</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-gray-100/70 border border-dashed border-gray-300 rounded-lg px-2 py-1 text-gray-500">
+                    <span>Adjustable wrench</span>
+                    <span class="text-[9.5px] font-mono-code">Pending check</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 2b: Step 2 · Private On-Device Check on Phone
+      function renderStep2b() {
+        applyZoneFocus({ phone: true, cloud: false, store: false });
+        highlightTimelineUpTo(2);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(174, 344)');
+        }
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+
+        if (crossingPacket && crossingPacketText) {
+          crossingPacketText.textContent = '← Reply returned across line';
+          crossingPacket.classList.remove('opacity-0');
+        }
+
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · On-device check';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2 my-auto">
+              <div class="bg-gray-900 text-white rounded-2xl p-2 text-center shadow-sm">
+                <div class="text-[11px] font-bold">
+                  🛡️ Processed on your phone only
+                </div>
+                <p class="text-[9.5px] text-gray-300">Cross-checked against private home toolbox</p>
+              </div>
+              <div class="bg-white border-2 border-gray-900 rounded-2xl p-2.5 text-xs space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono-code uppercase font-semibold text-gray-500">Updated Shopping List</span>
+                  <span class="text-[9.5px] font-mono-code text-gray-600">3 to buy · Aisle 3</span>
+                </div>
+                <ul class="space-y-1 text-[11px]">
+                  <li class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg px-2 py-1">
+                    <div>
+                      <span class="line-through text-gray-400 text-[10px] mr-1">washer</span>
+                      <span class="font-bold text-gray-900">Ceramic cartridge</span>
+                    </div>
+                    <span class="text-[9.5px] font-mono-code text-amber-800 font-semibold">Replaced</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-2 py-1">
+                    <span class="font-medium text-gray-800">PTFE thread tape</span>
+                    <span class="text-[9.5px] font-mono-code text-emerald-700 font-semibold">✓ Matched</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-2 py-1">
+                    <span class="font-medium text-gray-800">Silicone valve grease</span>
+                    <span class="text-[9.5px] font-mono-code text-emerald-700 font-semibold">+ Added</span>
+                  </li>
+                  <li class="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg px-2 py-1">
+                    <span class="line-through text-gray-500">Adjustable wrench</span>
+                    <span class="text-[9.5px] font-mono-code text-emerald-700 font-bold">Owned · Skip</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 3: Step 3 · Seamless Node Handoff (Same Session)
+      function renderStep3() {
+        applyZoneFocus({ phone: false, cloud: false, store: true, phoneSoft: true });
+        highlightTimelineUpTo(2);
+
+        if (node1) node1.setAttribute('filter', 'url(#nodeGlow)');
+        schedule(() => {
+          if (currentStep === 6 && node2) node2.setAttribute('filter', 'url(#nodeGlow)');
+        }, 650);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(185, 332)');
+          schedule(() => {
+            if (currentStep === 6) actorAlex.setAttribute('transform', 'translate(388, 178)');
+          }, 150);
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '192');
+          wifiLinkLine.setAttribute('y1', '334');
+          wifiLinkLine.setAttribute('x2', '233');
+          wifiLinkLine.setAttribute('y2', '284');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(262, 336)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Handing off · Session 7F3A';
+
+        schedule(() => {
+          if (currentStep !== 6) return;
+          if (wifiLinkLine) {
+            wifiLinkLine.setAttribute('x1', '396');
+            wifiLinkLine.setAttribute('y1', '182');
+            wifiLinkLine.setAttribute('x2', '422');
+            wifiLinkLine.setAttribute('y2', '72');
+          }
+          if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(302, 145)');
+          if (wifiSessionText) wifiSessionText.textContent = 'Node 2 · Session 7F3A';
+        }, 700);
+
+        if (phoneSessionStatus) phoneSessionStatus.textContent = 'Node 2 · same session';
+        if (cloudSessionTag) cloudSessionTag.textContent = 'Node 2 · Session 7F3A';
+        if (headerSessionPill) headerSessionPill.textContent = 'Node 2 · Session 7F3A';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-3 my-auto">
+              <div class="bg-gray-900 text-white rounded-2xl p-3 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold">Node 2 · same session</span>
+                  <span class="font-mono-code text-[10px] bg-white/15 px-2 py-0.5 rounded">7F3A</span>
+                </div>
+                <p class="text-[11px] text-gray-300">No pairing screen · Reconnected at Aisle 3</p>
+              </div>
+              <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3 text-[11px] text-gray-600">
+                Store knows nearest Node (Aisle 3) — never exact indoor coordinates.
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 4a: Step 4 · Amber Shelf Sensor & Explicit Consent
+      function renderStep4a() {
+        applyZoneFocus({ phone: true, cloud: false, store: true });
+        highlightTimelineUpTo(2);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(388, 178)');
+        }
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '396');
+          wifiLinkLine.setAttribute('y1', '182');
+          wifiLinkLine.setAttribute('x2', '422');
+          wifiLinkLine.setAttribute('y2', '72');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(302, 145)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Node 2 · Session 7F3A';
+
+        if (shelfSensorSlot) shelfSensorSlot.setAttribute('fill', '#f59e0b');
+        if (shelfSensorBeacon) {
+          shelfSensorBeacon.setAttribute('fill', '#f59e0b');
+          shelfSensorBeacon.classList.add('sensor-amber-active');
+        }
+        if (shelfSensorCallout) shelfSensorCallout.setAttribute('opacity', '1');
+
+        if (chipStaff) chipStaff.classList.remove('agent-chip-active');
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · Awaiting consent';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2.5 my-auto">
+              <div class="bg-amber-50 border border-amber-300 rounded-2xl p-2.5 text-xs">
+                <p class="font-bold text-amber-900">Shelf Sensor Alert · Aisle 3</p>
+                <p class="text-[11px] text-amber-800 mt-0.5">
+                  Ceramic cartridge slot is currently empty.
+                </p>
+              </div>
+              <div class="bg-white border-2 border-gray-900 rounded-2xl p-3 space-y-2.5 shadow-sm">
+                <p class="text-[10px] font-mono-code uppercase text-gray-400">Siri Consent Gate</p>
+                <p class="text-xs font-bold text-gray-900">Call an associate?</p>
+                <p class="text-[10px] text-gray-500">
+                  Shares only Session 7F3A, Aisle 3 &amp; item needed.
+                </p>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <span class="py-1.5 rounded-xl bg-gray-100 text-gray-600 text-center text-xs font-semibold">No</span>
+                  <span class="py-1.5 rounded-xl bg-gray-900 text-white text-center text-xs font-bold ring-2 ring-amber-400">✓ Yes</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 4b: Step 4 · Plain Staff Dispatch & 3-Step Project Guide
+      function renderStep4b() {
+        applyZoneFocus({ phone: true, cloud: true, store: true });
+        highlightTimelineUpTo(2);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(388, 178)');
+        }
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '396');
+          wifiLinkLine.setAttribute('y1', '182');
+          wifiLinkLine.setAttribute('x2', '422');
+          wifiLinkLine.setAttribute('y2', '72');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(302, 145)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Node 2 · Session 7F3A';
+
+        if (shelfSensorSlot) shelfSensorSlot.setAttribute('fill', '#f59e0b');
+        if (shelfSensorBeacon) shelfSensorBeacon.setAttribute('fill', '#f59e0b');
+        if (staffAppCard) staffAppCard.classList.remove('hidden');
+
+        if (chipStaff) chipStaff.classList.add('agent-chip-active');
+        schedule(() => {
+          if (currentStep === 8 && chipGuiding) chipGuiding.classList.add('agent-chip-active');
+        }, 700);
+
+        if (actorStaff) {
+          actorStaff.classList.remove('opacity-0');
+          actorStaff.setAttribute('transform', 'translate(650, 155)');
+          schedule(() => {
+            if (currentStep === 8) actorStaff.setAttribute('transform', 'translate(432, 182)');
+          }, 150);
+        }
+
+        if (cloudSessionTag) cloudSessionTag.textContent = 'Session 7F3A · Staff + Guide';
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · Project guiding';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2 my-auto">
+              <div class="flex items-center justify-between bg-amber-500 text-white rounded-xl px-2.5 py-1.5 text-[11px] font-bold">
+                <span>Match Token</span>
+                <span>AMBER</span>
+              </div>
+              <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2 text-[11px] text-emerald-900 font-medium">
+                ✓ Cartridge X: Added by associate, confirmed by you
+              </div>
+              <div class="bg-gray-900 text-white rounded-2xl p-2.5 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold">3-Step Repair Guide</span>
+                  <span class="font-mono-code text-[10px] bg-white/15 px-2 py-0.5 rounded">about 20 min</span>
+                </div>
+                <ol class="text-[10px] text-gray-200 space-y-0.5 list-decimal list-inside">
+                  <li>Shut off under-sink valve</li>
+                  <li>Swap cartridge &amp; apply grease</li>
+                  <li>Wrap PTFE tape &amp; test</li>
+                </ol>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 5a: Step 5 · Cashier Scan (Product IDs & Quantities Only)
+      function renderStep5a() {
+        applyZoneFocus({ phone: true, cloud: false, store: true });
+        highlightTimelineUpTo(3);
+
+        if (node3) node3.setAttribute('filter', 'url(#nodeGlow)');
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(486, 336)');
+        }
+
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '1');
+        if (wifiLinkLine) {
+          wifiLinkLine.setAttribute('x1', '494');
+          wifiLinkLine.setAttribute('y1', '344');
+          wifiLinkLine.setAttribute('x2', '534');
+          wifiLinkLine.setAttribute('y2', '284');
+        }
+        if (wifiSessionBadge) wifiSessionBadge.setAttribute('transform', 'translate(310, 336)');
+        if (wifiSessionText) wifiSessionText.textContent = 'Cashier Node · Session 7F3A';
+
+        if (cashierTerminalCard) cashierTerminalCard.classList.remove('hidden');
+        if (headerSessionPill) headerSessionPill.textContent = 'Session 7F3A · Cashier scan';
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="space-y-2 my-auto">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-900">Finalized Basket</span>
+                <span class="text-[10px] text-gray-400">No wrench</span>
+              </div>
+              <div class="bg-gray-50 border border-gray-200 rounded-xl p-2 text-[11px] text-gray-800 space-y-0.5">
+                <div>• Ceramic cartridge ×1</div>
+                <div>• PTFE tape ×1</div>
+                <div>• Silicone grease ×1</div>
+              </div>
+              <!-- Minimal SVG QR Code -->
+              <div class="bg-white border border-gray-300 rounded-xl p-2 flex flex-col items-center">
+                <svg class="w-16 h-16 text-gray-900" viewBox="0 0 36 36" fill="currentColor">
+                  <rect x="2" y="2" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                  <rect x="5.5" y="5.5" width="3" height="3"/>
+                  <rect x="24" y="2" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                  <rect x="27.5" y="5.5" width="3" height="3"/>
+                  <rect x="2" y="24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                  <rect x="5.5" y="27.5" width="3" height="3"/>
+                  <rect x="15" y="4" width="3" height="6"/>
+                  <rect x="15" y="14" width="6" height="6"/>
+                  <rect x="24" y="16" width="8" height="3"/>
+                  <rect x="16" y="24" width="4" height="8"/>
+                  <rect x="24" y="24" width="8" height="4"/>
+                </svg>
+                <span class="text-[9px] font-mono-code text-gray-500 mt-1">Carries SKU IDs + Qty only</span>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 5b: Step 5 · Phone Self-Closes Session & RAM Empties
+      function renderStep5b() {
+        applyZoneFocus({ phone: true, cloud: true, store: false });
+        highlightTimelineUpTo(4);
+
+        if (actorAlex) {
+          actorAlex.setAttribute('opacity', '1');
+          actorAlex.setAttribute('transform', 'translate(486, 336)');
+        }
+        if (cashierTerminalCard) cashierTerminalCard.classList.remove('hidden');
+        if (cashierPaymentBanner) cashierPaymentBanner.classList.remove('hidden');
+
+        // Crossing "Close" message animation
+        if (crossingPacket && crossingPacketText) {
+          crossingPacketText.textContent = 'Close → Session 7F3A';
+          crossingPacket.classList.remove('opacity-0');
+          crossingPacket.style.transform = 'translate(-50%, -50%) scale(1.03)';
+        }
+
+        // Empty Orchestrator Session Memory Box
+        if (sessionMemoryBox) {
+          sessionMemoryBox.classList.add('border-gray-900', 'bg-gray-900', 'text-white');
+          sessionMemoryBox.classList.remove('border-gray-200', 'bg-gray-50');
+        }
+        if (sessionMemoryContent) {
+          sessionMemoryContent.textContent = 'WIPED (0 bytes)';
+          sessionMemoryContent.className = 'font-mono-code text-[10px] text-emerald-400 font-bold';
+        }
+        if (cloudSessionTag) cloudSessionTag.textContent = 'Session closed · memory cleared';
+        if (wifiLinkGroup) wifiLinkGroup.setAttribute('opacity', '0');
+
+        if (phoneSessionStatus) {
+          phoneSessionStatus.textContent = 'Session closed';
+          phoneSessionStatus.className = 'font-mono-code text-[10px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-700';
+        }
+        if (headerSessionPill) headerSessionPill.textContent = 'Session closed · RAM wiped';
+
+        schedule(() => {
+          if (currentStep === 10 && sessionMemoryBox) {
+            sessionMemoryBox.classList.remove('border-gray-900', 'bg-gray-900', 'text-white');
+            sessionMemoryBox.classList.add('border-gray-200', 'bg-gray-50');
+            if (sessionMemoryContent) {
+              sessionMemoryContent.textContent = 'empty';
+              sessionMemoryContent.className = 'font-mono-code text-[10px] text-gray-400';
+            }
+          }
+        }, 1600);
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="my-auto space-y-2.5 text-center">
+              <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3">
+                <p class="text-xs font-bold text-emerald-900">✓ Purchase saved on your phone</p>
+                <p class="text-[10px] text-emerald-700 mt-0.5">Local receipt stored in Apple Wallet</p>
+              </div>
+              <div class="bg-gray-900 text-white rounded-2xl p-3">
+                <p class="text-xs font-bold">Session closed</p>
+                <p class="text-[10px] text-gray-300 mt-0.5">
+                  Phone initiated close · Store RAM emptied
+                </p>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 6: Closing · Lifecycle Timeline & Zero-Linkage Guarantee
+      function renderStep6() {
+        applyZoneFocus({ phone: true, cloud: true, store: true });
+        if (privacyLine) privacyLine.classList.add('privacy-line-pulse');
+        if (headerSessionPill) headerSessionPill.textContent = 'Complete · Zero linkage';
+
+        // Animate timeline strip left to right, then reveal final box
+        const items = document.querySelectorAll('.timeline-step');
+        items.forEach((item, idx) => {
+          schedule(() => {
+            if (currentStep === 11) {
+              item.classList.remove('opacity-25', 'bg-gray-50', 'text-gray-400', 'border-gray-200');
+              item.classList.add('opacity-100', 'bg-gray-900', 'text-white', 'border-gray-900');
+            }
+          }, idx * 180);
+        });
+
+        schedule(() => {
+          if (currentStep !== 11) return;
+          if (closingOverlay) closingOverlay.classList.remove('hidden');
+          schedule(() => {
+            if (closingTakeawayBox) {
+              closingTakeawayBox.classList.remove('opacity-0', 'translate-y-2');
+            }
+          }, 60);
+        }, 1150);
+
+        if (phoneScreenBody) {
+          phoneScreenBody.innerHTML = `
+            <div class="my-auto bg-gray-50 border border-gray-200 rounded-2xl p-3 text-center space-y-2">
+              <p class="text-xs font-bold text-gray-900">Your Private Record</p>
+              <p class="text-[11px] text-gray-600">
+                Receipt &amp; 3-step repair guide stay solely on your iPhone.
+              </p>
+            </div>
+          `;
+        }
+      }
+
+      // Main Navigation Controller
+      function goToStep(index) {
+        if (index < 0 || index >= STEPS.length) return;
+        currentStep = index;
+        resetTransientVisuals();
+        updateStepButtons();
+
+        const step = STEPS[currentStep];
+        if (headerTimeBadge) headerTimeBadge.textContent = step.time;
+        if (cardActBadge) cardActBadge.textContent = step.actLabel;
+        if (cardTitle) cardTitle.textContent = step.title;
+        if (cardHighlightBadge) cardHighlightBadge.textContent = step.focus;
+        if (cardScript) cardScript.textContent = step.script;
+        if (cardSessionFooter) cardSessionFooter.textContent = step.sessionFooter;
+
+        if (cardTipBadge) {
+          if (step.tip) {
+            cardTipBadge.textContent = step.tip;
+            cardTipBadge.classList.remove('hidden');
+          } else {
+            cardTipBadge.classList.add('hidden');
+          }
+        }
+
+        if (btnPrev) btnPrev.disabled = currentStep === 0;
+        if (btnNext) btnNext.disabled = currentStep === STEPS.length - 1;
+
+        const renderers = [
+          renderStep0a,
+          renderStep0b,
+          renderStep1a,
+          renderStep1b,
+          renderStep2a,
+          renderStep2b,
+          renderStep3,
+          renderStep4a,
+          renderStep4b,
+          renderStep5a,
+          renderStep5b,
+          renderStep6
+        ];
+
+        if (typeof renderers[currentStep] === 'function') {
+          renderers[currentStep]();
+        }
+      }
+
+      function initStorytellingBoard() {
+        buildStepButtons();
+
+        if (btnPrev) {
+          btnPrev.addEventListener('click', () => goToStep(currentStep - 1));
+        }
+        if (btnNext) {
+          btnNext.addEventListener('click', () => goToStep(currentStep + 1));
+        }
+        if (btnReplay) {
+          btnReplay.addEventListener('click', () => goToStep(currentStep));
+        }
+        if (btnReturningFlash) {
+          btnReturningFlash.addEventListener('click', triggerReturningVisitFlash);
+        }
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            goToStep(currentStep + 1);
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            goToStep(currentStep - 1);
+          } else if (e.key === ' ') {
+            if (document.activeElement && document.activeElement.tagName !== 'BUTTON') {
+              e.preventDefault();
+              goToStep(currentStep);
+            }
+          }
+        });
+
+        // Start at first sub-step (0a)
+        goToStep(0);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStorytellingBoard);
+      } else {
+        initStorytellingBoard();
+      }
+    })();
+  </script>
+</body>
+</html>
